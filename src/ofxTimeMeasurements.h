@@ -351,9 +351,9 @@ class ofxTimeMeasurements {
 		std::string									selection;
 		int										numVisible;
 
-		unsigned int							enableKey; //the whole addon
-		unsigned int							activateKey;
-		unsigned int							toggleSampleKey;  //selected time sample
+		int							            enableKey; //the whole addon
+		int							            activateKey;
+		int							            toggleSampleKey;  //selected time sample
 
 		bool									freeze; //if enabled, ignore current timings and show the last one we had b4 freezing
 		bool									menuActive;

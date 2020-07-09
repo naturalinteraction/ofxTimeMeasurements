@@ -296,7 +296,7 @@ bool ofxTimeMeasurements::startMeasuringGL(const string & name){
 
 		string glName = glPrefix + name;
 		measuringGlLabel = glName;
-		GL_Measurement * m;
+		GL_Measurement * m = NULL;
 		auto it = glTimes.find(glName);
 		if (it == glTimes.end()){ //new measurement, we need to create an object for it
 			m = new GL_Measurement();
@@ -332,7 +332,7 @@ void ofxTimeMeasurements::stopMeasuringGL(const string & name){
 	if (measuringGlLabel != glName){
 		ofLogError("ofxTimeMeasurements") << "Can't stopMeasuringGL()! you haven't started measuring yet! : " << name;
 	}else{
-		GL_Measurement * m;
+		GL_Measurement * m = NULL;
 		auto it = glTimes.find(glName);
 		if (it == glTimes.end()){ //unkonwn measurement! mismatched start-stop!
 			ofLogError("ofxTimeMeasurements") << "Can't stopMeasuringGL()! you haven't started measuring yet! : " << name;
@@ -356,7 +356,7 @@ bool ofxTimeMeasurements::startMeasuring(const string & ID, bool accumulate, boo
 	string localID = ID;
 	if (!enabled) return true;
 
-	uint64_t wastedTime;
+	uint64_t wastedTime = 0;
 	if(internalBenchmark){
 		wastedTime = TM_GET_MICROS();
 	}
@@ -554,7 +554,7 @@ float ofxTimeMeasurements::stopMeasuring(const string & ID, bool accumulate){
 			t->measuring = false;
 			t->thread = thread;
 			t->error = false;
-			t->acrossFrames = (bIsMainThread && t->frame != currentFrameNum); //we only care about across-frames in main thread
+			t->acrossFrames = (bIsMainThread && t->frame != (int)currentFrameNum); //we only care about across-frames in main thread
 			t->microsecondsStop = timeNow;
 			ret = t->duration = timeNow - t->microsecondsStart;
 			if (!freeze) {
@@ -685,7 +685,7 @@ void ofxTimeMeasurements::draw(int x, int y) {
 	}
 
 	float fr = ofGetFrameRate();
-	uint64_t timeNow;
+	uint64_t timeNow = 0;
 	if(internalBenchmark){
 		timeNow = TM_GET_MICROS();
 	}
@@ -1180,7 +1180,7 @@ void ofxTimeMeasurements::draw(int x, int y) {
 	}
 	string pad;
 	int diff = (maxW - strlen(msg));
-	for(size_t i = 0; i < diff; i++) pad += " ";
+	for(int i = 0; i < diff; i++) pad += " ";
 	int lastLine = ( drawLines.size() + 1 ) * charH;
 	drawString( pad + msg, x, y + lastLine );
 	
@@ -1346,10 +1346,10 @@ bool ofxTimeMeasurements::_keyPressed(ofKeyEventArgs &e){
 								#endif
 							}else{
 								selIndex ++;
-								if(selIndex >= drawLines.size()) selIndex = 0;
+								if(selIndex >= (int)drawLines.size()) selIndex = 0;
 								while(drawLines[selIndex].tm == NULL){
 									selIndex ++;
-									if(selIndex >= drawLines.size()) selIndex = 0;
+									if(selIndex >= (int)drawLines.size()) selIndex = 0;
 								}
 								selection = drawLines[selIndex].key;
 							}
@@ -1436,7 +1436,7 @@ void ofxTimeMeasurements::collapseExpand(string sel, bool collapse){
 		if( loc != tr.end()) {
 			vector<string> subTree;
 			walkTree(loc, 0, subTree);
-			for(int p = 0; p < subTree.size(); p++ ){
+			for(unsigned int p = 0; p < subTree.size(); p++ ){
 				times[subTree[p]]->settings.visible = !collapse;
 			}
 		}
